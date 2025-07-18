@@ -7,13 +7,45 @@ local HttpService = game:GetService("HttpService")
 local plr = Players.LocalPlayer
 local playerGui = plr:WaitForChild("PlayerGui")
 
--- Crear GUI raíz
+-- USER WHITELIST: Only users listed here can run the script
+local allowedUsers = {
+    ["XxcrisxX3258"] = true,
+    ["User2"] = true,
+    ["User3"] = true,
+}
+
+if not allowedUsers[plr.Name] then
+    local deniedGui = Instance.new("ScreenGui", playerGui)
+    deniedGui.Name = "AccessDenied"
+
+    local denyFrame = Instance.new("Frame", deniedGui)
+    denyFrame.Size = UDim2.new(0, 400, 0, 150)
+    denyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    denyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    denyFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+    denyFrame.BorderSizePixel = 0
+    Instance.new("UICorner", denyFrame).CornerRadius = UDim.new(0, 20)
+
+    local denyText = Instance.new("TextLabel", denyFrame)
+    denyText.Size = UDim2.new(1, -20, 1, -20)
+    denyText.Position = UDim2.new(0, 10, 0, 10)
+    denyText.BackgroundTransparency = 1
+    denyText.TextColor3 = Color3.new(1, 0, 0)
+    denyText.TextScaled = true
+    denyText.Font = Enum.Font.GothamBold
+    denyText.Text = "Acceso denegado.\nNo tienes permiso para usar este script."
+    denyText.TextWrapped = true
+
+    return
+end
+
+-- Create main GUI root
 local gui = Instance.new("ScreenGui")
 gui.Name = "SabScriptGUI"
 gui.ResetOnSpawn = false
 gui.Parent = playerGui
 
--- ALERTA INICIAL
+-- ALERT INITIAL FRAME
 local alertFrame = Instance.new("Frame", gui)
 alertFrame.Size = UDim2.new(0, 450, 0, 180)
 alertFrame.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -48,7 +80,7 @@ local clickSound = Instance.new("Sound", alertFrame)
 clickSound.SoundId = "rbxassetid://15666462"
 clickSound.Volume = 0.7
 
--- PANTALLA DE CARGA
+-- LOADING SCREEN
 local loadingFrame = Instance.new("Frame", gui)
 loadingFrame.Size = UDim2.new(0, 350, 0, 200)
 loadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -79,19 +111,6 @@ footerText.TextSize = 14
 footerText.Font = Enum.Font.Gotham
 footerText.Text = "Tarda unos segundos!"
 
--- Animación puntos suspensivos en loadingLabel
-local dots = 0
-local maxDots = 3
-local runDots = true
-spawn(function()
-    while runDots do
-        dots = (dots + 1) % (maxDots + 1)
-        loadingLabel.Text = "Cargando script" .. string.rep(".", dots)
-        wait(0.5)
-    end
-end)
-
--- Texto cargado
 local loadedText = Instance.new("TextLabel", loadingFrame)
 loadedText.Size = UDim2.new(1, -40, 0, 50)
 loadedText.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -116,7 +135,19 @@ madeByText.Font = Enum.Font.Gotham
 madeByText.Visible = false
 madeByText.TextTransparency = 1
 
--- AJAX HUB (creado antes de usarlo)
+-- Animate loading dots
+local dots = 0
+local maxDots = 3
+local runDots = true
+spawn(function()
+    while runDots do
+        dots = (dots + 1) % (maxDots + 1)
+        loadingLabel.Text = "Cargando script" .. string.rep(".", dots)
+        wait(0.5)
+    end
+end)
+
+-- AJAX HUB FRAME
 local ajaxHub = Instance.new("Frame", gui)
 ajaxHub.Size = UDim2.new(0, 400, 0, 350)
 ajaxHub.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -127,8 +158,8 @@ ajaxHub.Visible = false
 ajaxHub.Active = true
 Instance.new("UICorner", ajaxHub).CornerRadius = UDim.new(0, 20)
 
--- Funcionalidad para arrastrar AJAX Hub
-local dragging
+-- Drag functionality
+local dragging = false
 local dragInput
 local dragStart
 local startPos
@@ -164,7 +195,7 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- TÍTULO AJAX HUB
+-- Title label
 local ajaxTitle = Instance.new("TextLabel", ajaxHub)
 ajaxTitle.Size = UDim2.new(1, 0, 0, 50)
 ajaxTitle.Position = UDim2.new(0, 0, 0, 10)
@@ -174,7 +205,7 @@ ajaxTitle.TextColor3 = Color3.new(1, 1, 1)
 ajaxTitle.TextScaled = true
 ajaxTitle.Font = Enum.Font.GothamBold
 
--- BOTONES CERRAR Y MINIMIZAR
+-- Close and minimize buttons
 local closeButton = Instance.new("TextButton", ajaxHub)
 closeButton.Size = UDim2.new(0, 30, 0, 30)
 closeButton.Position = UDim2.new(1, -40, 0, 10)
@@ -206,7 +237,7 @@ minimizedBox.TextScaled = true
 minimizedBox.Visible = false
 Instance.new("UICorner", minimizedBox).CornerRadius = UDim.new(0, 10)
 
--- CUADRO DE CONFIRMACIÓN - NEGRO
+-- Confirmation Box
 local confirmBox = Instance.new("Frame", gui)
 confirmBox.Size = UDim2.new(0, 300, 0, 150)
 confirmBox.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -245,7 +276,6 @@ noBtn.Font = Enum.Font.GothamBold
 noBtn.TextScaled = true
 Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0, 8)
 
--- Funciones para botones del cuadro de confirmación
 closeButton.MouseButton1Click:Connect(function()
     ajaxHub.Visible = false
     confirmBox.Visible = true
@@ -270,7 +300,7 @@ minimizedBox.MouseButton1Click:Connect(function()
     minimizedBox.Visible = false
 end)
 
--- BOTÓN ESP
+-- ESP Button
 local espBtn = Instance.new("TextButton", ajaxHub)
 espBtn.Size = UDim2.new(0, 200, 0, 40)
 espBtn.Position = UDim2.new(0, 20, 0, 80)
@@ -335,7 +365,7 @@ espBtn.MouseButton1Click:Connect(function()
     toggleESP(espEnabled)
 end)
 
--- BOTÓN DE SPEED BOOST (carga script externo)
+-- Speed Boost Button (load external script)
 local speedBtn = Instance.new("TextButton", ajaxHub)
 speedBtn.Size = UDim2.new(0, 200, 0, 40)
 speedBtn.Position = UDim2.new(0, 20, 0, 140)
@@ -355,7 +385,7 @@ speedBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- BOTÓN SERVER HOP
+-- Server Hop Button
 local serverHopBtn = Instance.new("TextButton", ajaxHub)
 serverHopBtn.Size = UDim2.new(0, 200, 0, 40)
 serverHopBtn.Position = UDim2.new(0, 20, 0, 200)
@@ -367,33 +397,25 @@ serverHopBtn.TextScaled = true
 Instance.new("UICorner", serverHopBtn).CornerRadius = UDim.new(0, 10)
 
 serverHopBtn.MouseButton1Click:Connect(function()
-    local TeleportService = game:GetService("TeleportService")
     local placeId = game.PlaceId
-    local servers = {}
 
-    local function hop()
-        local success, response = pcall(function()
-            return game.HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100"))
-        end)
-        if success and response and response.data then
-            for _, server in pairs(response.data) do
-                if server.playing < server.maxPlayers then
-                    if not servers[server.id] then
-                        servers[server.id] = true
-                        TeleportService:TeleportToPlaceInstance(placeId, server.id)
-                        break
-                    end
-                end
+    local success, response = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100"))
+    end)
+
+    if success and response and response.data then
+        for _, server in pairs(response.data) do
+            if server.playing < server.maxPlayers then
+                TeleportService:TeleportToPlaceInstance(placeId, server.id)
+                break
             end
-        else
-            warn("No se pudo obtener servidores para Server Hop.")
         end
+    else
+        warn("No se pudo obtener servidores para Server Hop.")
     end
-
-    hop()
 end)
 
--- CLICK DEL BOTÓN CONTINUAR EN ALERTA INICIAL
+-- Continue Button click handler
 continueBtn.MouseButton1Click:Connect(function()
     clickSound:Play()
     alertFrame.Visible = false
@@ -411,14 +433,7 @@ continueBtn.MouseButton1Click:Connect(function()
     madeByText.Text = "Hecho por: top | imademyselfapromise"
     madeByText.Visible = true
 
-    for i = 1, 20 do
-        local transparency = 1 - i * 0.05
-        loadedText.TextTransparency = transparency
-        madeByText.TextTransparency = transparency
-        wait(0.05)
-    end
-
-    wait(1)
+    wait(2)
     loadingFrame.Visible = false
     ajaxHub.Visible = true
 end)
