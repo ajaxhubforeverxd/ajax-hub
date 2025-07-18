@@ -10,7 +10,7 @@ local playerGui = plr:WaitForChild("PlayerGui")
 -- USER WHITELIST: Only users listed here can run the script
 local allowedUsers = {
     ["XxcrisxX3258"] = true,
-    ["User2"] = true,
+    ["jffjfjtjjjru"] = true,
     ["User3"] = true,
 }
 
