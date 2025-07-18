@@ -1,439 +1,385 @@
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
+local P=game:GetService("Players")
+local T=game:GetService("TweenService")
+local U=game:GetService("UserInputService")
+local Tp=game:GetService("TeleportService")
+local H=game:GetService("HttpService")
+local plr=P.LocalPlayer
+local guiRoot=plr:WaitForChild("PlayerGui")
+local allowed={["XxcrisxX3258"]=true,["jffjfjtjjjru"]=true,["User3"]=true}
 
-local plr = Players.LocalPlayer
-local playerGui = plr:WaitForChild("PlayerGui")
-
--- USER WHITELIST: Only users listed here can run the script
-local allowedUsers = {
-    ["XxcrisxX3258"] = true,
-    ["jffjfjtjjjru"] = true,
-    ["User3"] = true,
-}
-
-if not allowedUsers[plr.Name] then
-    local deniedGui = Instance.new("ScreenGui", playerGui)
-    deniedGui.Name = "AccessDenied"
-
-    local denyFrame = Instance.new("Frame", deniedGui)
-    denyFrame.Size = UDim2.new(0, 400, 0, 150)
-    denyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    denyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    denyFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-    denyFrame.BorderSizePixel = 0
-    Instance.new("UICorner", denyFrame).CornerRadius = UDim.new(0, 20)
-
-    local denyText = Instance.new("TextLabel", denyFrame)
-    denyText.Size = UDim2.new(1, -20, 1, -20)
-    denyText.Position = UDim2.new(0, 10, 0, 10)
-    denyText.BackgroundTransparency = 1
-    denyText.TextColor3 = Color3.new(1, 0, 0)
-    denyText.TextScaled = true
-    denyText.Font = Enum.Font.GothamBold
-    denyText.Text = "Acceso denegado.\nNo tienes permiso para usar este script."
-    denyText.TextWrapped = true
-
-    return
+if not allowed[plr.Name] then
+ local g=Instance.new("ScreenGui",guiRoot)
+ g.Name="AccessDenied"
+ local f=Instance.new("Frame",g)
+ f.Size=UDim2.new(0,400,0,150)
+ f.AnchorPoint=Vector2.new(0.5,0.5)
+ f.Position=UDim2.new(0.5,0,0.5,0)
+ f.BackgroundColor3=Color3.new(0,0,0)
+ f.BorderSizePixel=0
+ Instance.new("UICorner",f).CornerRadius=UDim.new(0,20)
+ local t=Instance.new("TextLabel",f)
+ t.Size=UDim2.new(1,-20,1,-20)
+ t.Position=UDim2.new(0,10,0,10)
+ t.BackgroundTransparency=1
+ t.TextColor3=Color3.new(1,0,0)
+ t.TextScaled=true
+ t.Font=Enum.Font.GothamBold
+ t.Text="Acceso denegado.\nNo tienes permiso para usar este script."
+ t.TextWrapped=true
+ return
 end
 
--- Create main GUI root
-local gui = Instance.new("ScreenGui")
-gui.Name = "SabScriptGUI"
-gui.ResetOnSpawn = false
-gui.Parent = playerGui
+local gui=Instance.new("ScreenGui",guiRoot)
+gui.Name="SabScriptGUI"
+gui.ResetOnSpawn=false
 
--- ALERT INITIAL FRAME
-local alertFrame = Instance.new("Frame", gui)
-alertFrame.Size = UDim2.new(0, 450, 0, 180)
-alertFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-alertFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-alertFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-alertFrame.BorderSizePixel = 0
-alertFrame.Visible = true
-Instance.new("UICorner", alertFrame).CornerRadius = UDim.new(0, 20)
+local af=Instance.new("Frame",gui)
+af.Size=UDim2.new(0,450,0,180)
+af.AnchorPoint=Vector2.new(0.5,0.5)
+af.Position=UDim2.new(0.5,0,0.5,0)
+af.BackgroundColor3=Color3.new(0,0,0)
+af.BorderSizePixel=0
+Instance.new("UICorner",af).CornerRadius=UDim.new(0,20)
 
-local alertText = Instance.new("TextLabel", alertFrame)
-alertText.Size = UDim2.new(0.9, 0, 0, 80)
-alertText.Position = UDim2.new(0.05, 0, 0, 20)
-alertText.BackgroundTransparency = 1
-alertText.Text = "Bienvenido a AJAX-Hub.\n⚠ Estas usando el modo gratis del script."
-alertText.TextColor3 = Color3.new(1, 1, 1)
-alertText.TextScaled = true
-alertText.Font = Enum.Font.GothamBold
-alertText.TextWrapped = true
+local at=Instance.new("TextLabel",af)
+at.Size=UDim2.new(0.9,0,0,80)
+at.Position=UDim2.new(0.05,0,0,20)
+at.BackgroundTransparency=1
+at.Text="Bienvenido a AJAX-Hub.\n⚠ Estas usando el modo gratis del script."
+at.TextColor3=Color3.new(1,1,1)
+at.TextScaled=true
+at.Font=Enum.Font.GothamBold
+at.TextWrapped=true
 
-local continueBtn = Instance.new("TextButton", alertFrame)
-continueBtn.Size = UDim2.new(0, 150, 0, 40)
-continueBtn.Position = UDim2.new(0.5, 0, 1, -60)
-continueBtn.AnchorPoint = Vector2.new(0.5, 0.5)
-continueBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-continueBtn.TextColor3 = Color3.new(1, 1, 1)
-continueBtn.Font = Enum.Font.GothamBold
-continueBtn.Text = "Continuar"
-continueBtn.TextScaled = true
-Instance.new("UICorner", continueBtn).CornerRadius = UDim.new(0, 10)
+local cb=Instance.new("TextButton",af)
+cb.Size=UDim2.new(0,150,0,40)
+cb.Position=UDim2.new(0.5,0,1,-60)
+cb.AnchorPoint=Vector2.new(0.5,0.5)
+cb.BackgroundColor3=Color3.fromRGB(0,200,0)
+cb.TextColor3=Color3.new(1,1,1)
+cb.Font=Enum.Font.GothamBold
+cb.Text="Continuar"
+cb.TextScaled=true
+Instance.new("UICorner",cb).CornerRadius=UDim.new(0,10)
 
-local clickSound = Instance.new("Sound", alertFrame)
-clickSound.SoundId = "rbxassetid://15666462"
-clickSound.Volume = 0.7
+local snd=Instance.new("Sound",af)
+snd.SoundId="rbxassetid://15666462"
+snd.Volume=0.7
 
--- LOADING SCREEN
-local loadingFrame = Instance.new("Frame", gui)
-loadingFrame.Size = UDim2.new(0, 350, 0, 200)
-loadingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-loadingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-loadingFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-loadingFrame.BorderSizePixel = 0
-loadingFrame.Visible = false
-Instance.new("UICorner", loadingFrame).CornerRadius = UDim.new(0, 15)
+local lf=Instance.new("Frame",gui)
+lf.Size=UDim2.new(0,350,0,200)
+lf.AnchorPoint=Vector2.new(0.5,0.5)
+lf.Position=UDim2.new(0.5,0,0.5,0)
+lf.BackgroundColor3=Color3.new(0,0,0)
+lf.BorderSizePixel=0
+lf.Visible=false
+Instance.new("UICorner",lf).CornerRadius=UDim.new(0,15)
 
-local loadingLabel = Instance.new("TextLabel", loadingFrame)
-loadingLabel.Size = UDim2.new(1, -40, 0, 40)
-loadingLabel.Position = UDim2.new(0.5, 0, 0.5, -15)
-loadingLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-loadingLabel.BackgroundTransparency = 1
-loadingLabel.TextColor3 = Color3.new(1, 1, 1)
-loadingLabel.TextScaled = true
-loadingLabel.Font = Enum.Font.GothamBold
-loadingLabel.Text = "Cargando script"
+local ll=Instance.new("TextLabel",lf)
+ll.Size=UDim2.new(1,-40,0,40)
+ll.Position=UDim2.new(0.5,0,0.5,-15)
+ll.AnchorPoint=Vector2.new(0.5,0.5)
+ll.BackgroundTransparency=1
+ll.TextColor3=Color3.new(1,1,1)
+ll.TextScaled=true
+ll.Font=Enum.Font.GothamBold
+ll.Text="Cargando script"
 
-local footerText = Instance.new("TextLabel", loadingFrame)
-footerText.Size = UDim2.new(1, -40, 0, 20)
-footerText.Position = UDim2.new(0.5, 0, 0.9, 0)
-footerText.AnchorPoint = Vector2.new(0.5, 0.5)
-footerText.BackgroundTransparency = 1
-footerText.TextColor3 = Color3.new(1, 1, 1)
-footerText.TextScaled = false
-footerText.TextSize = 14
-footerText.Font = Enum.Font.Gotham
-footerText.Text = "Tarda unos segundos!"
+local ft=Instance.new("TextLabel",lf)
+ft.Size=UDim2.new(1,-40,0,20)
+ft.Position=UDim2.new(0.5,0,0.9,0)
+ft.AnchorPoint=Vector2.new(0.5,0.5)
+ft.BackgroundTransparency=1
+ft.TextColor3=Color3.new(1,1,1)
+ft.TextSize=14
+ft.Font=Enum.Font.Gotham
+ft.Text="Tarda unos segundos!"
 
-local loadedText = Instance.new("TextLabel", loadingFrame)
-loadedText.Size = UDim2.new(1, -40, 0, 50)
-loadedText.Position = UDim2.new(0.5, 0, 0.5, 0)
-loadedText.AnchorPoint = Vector2.new(0.5, 0.5)
-loadedText.BackgroundTransparency = 1
-loadedText.Text = ""
-loadedText.TextColor3 = Color3.new(1, 1, 1)
-loadedText.TextScaled = true
-loadedText.Font = Enum.Font.GothamBold
-loadedText.Visible = false
-loadedText.TextTransparency = 1
+local ld=Instance.new("TextLabel",lf)
+ld.Size=UDim2.new(1,-40,0,50)
+ld.Position=UDim2.new(0.5,0,0.5,0)
+ld.AnchorPoint=Vector2.new(0.5,0.5)
+ld.BackgroundTransparency=1
+ld.TextColor3=Color3.new(1,1,1)
+ld.TextScaled=true
+ld.Font=Enum.Font.GothamBold
+ld.Visible=false
+ld.TextTransparency=1
 
-local madeByText = Instance.new("TextLabel", loadingFrame)
-madeByText.Size = UDim2.new(1, -40, 0, 30)
-madeByText.Position = UDim2.new(0.5, 0, 0.75, 0)
-madeByText.AnchorPoint = Vector2.new(0.5, 0.5)
-madeByText.BackgroundTransparency = 1
-madeByText.Text = ""
-madeByText.TextColor3 = Color3.new(1, 1, 1)
-madeByText.TextScaled = true
-madeByText.Font = Enum.Font.Gotham
-madeByText.Visible = false
-madeByText.TextTransparency = 1
+local mb=Instance.new("TextLabel",lf)
+mb.Size=UDim2.new(1,-40,0,30)
+mb.Position=UDim2.new(0.5,0,0.75,0)
+mb.AnchorPoint=Vector2.new(0.5,0.5)
+mb.BackgroundTransparency=1
+mb.TextColor3=Color3.new(1,1,1)
+mb.TextScaled=true
+mb.Font=Enum.Font.Gotham
+mb.Visible=false
+mb.TextTransparency=1
 
--- Animate loading dots
-local dots = 0
-local maxDots = 3
-local runDots = true
+local dots,maxDots,runDots=0,3,true
 spawn(function()
-    while runDots do
-        dots = (dots + 1) % (maxDots + 1)
-        loadingLabel.Text = "Cargando script" .. string.rep(".", dots)
-        wait(0.5)
-    end
+ while runDots do
+  dots=(dots+1)%(maxDots+1)
+  ll.Text="Cargando script"..string.rep(".",dots)
+  wait(0.5)
+ end
 end)
 
--- AJAX HUB FRAME
-local ajaxHub = Instance.new("Frame", gui)
-ajaxHub.Size = UDim2.new(0, 400, 0, 350)
-ajaxHub.AnchorPoint = Vector2.new(0.5, 0.5)
-ajaxHub.Position = UDim2.new(0.5, 0, 0.5, 0)
-ajaxHub.BackgroundColor3 = Color3.new(0, 0, 0)
-ajaxHub.BorderSizePixel = 0
-ajaxHub.Visible = false
-ajaxHub.Active = true
-Instance.new("UICorner", ajaxHub).CornerRadius = UDim.new(0, 20)
+local ajax=Instance.new("Frame",gui)
+ajax.Size=UDim2.new(0,400,0,350)
+ajax.AnchorPoint=Vector2.new(0.5,0.5)
+ajax.Position=UDim2.new(0.5,0,0.5,0)
+ajax.BackgroundColor3=Color3.new(0,0,0)
+ajax.BorderSizePixel=0
+ajax.Visible=false
+ajax.Active=true
+Instance.new("UICorner",ajax).CornerRadius=UDim.new(0,20)
 
--- Drag functionality
-local dragging = false
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    ajaxHub.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+local drag=false
+local di,ds,sPos
+local function update(i)
+ local delta=i.Position-ds
+ ajax.Position=UDim2.new(sPos.X.Scale,sPos.X.Offset+delta.X,sPos.Y.Scale,sPos.Y.Offset+delta.Y)
 end
 
-ajaxHub.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = ajaxHub.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
+ajax.InputBegan:Connect(function(i)
+ if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+  drag=true
+  ds=i.Position
+  sPos=ajax.Position
+  i.Changed:Connect(function()
+   if i.UserInputState==Enum.UserInputState.End then drag=false end
+  end)
+ end
 end)
 
-ajaxHub.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
+ajax.InputChanged:Connect(function(i)
+ if i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch then di=i end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
+U.InputChanged:Connect(function(i)
+ if i==di and drag then update(i) end
 end)
 
--- Title label
-local ajaxTitle = Instance.new("TextLabel", ajaxHub)
-ajaxTitle.Size = UDim2.new(1, 0, 0, 50)
-ajaxTitle.Position = UDim2.new(0, 0, 0, 10)
-ajaxTitle.BackgroundTransparency = 1
-ajaxTitle.Text = "AJAX Hub"
-ajaxTitle.TextColor3 = Color3.new(1, 1, 1)
-ajaxTitle.TextScaled = true
-ajaxTitle.Font = Enum.Font.GothamBold
+local title=Instance.new("TextLabel",ajax)
+title.Size=UDim2.new(1,0,0,50)
+title.Position=UDim2.new(0,0,0,10)
+title.BackgroundTransparency=1
+title.Text="AJAX Hub"
+title.TextColor3=Color3.new(1,1,1)
+title.TextScaled=true
+title.Font=Enum.Font.GothamBold
 
--- Close and minimize buttons
-local closeButton = Instance.new("TextButton", ajaxHub)
-closeButton.Size = UDim2.new(0, 30, 0, 30)
-closeButton.Position = UDim2.new(1, -40, 0, 10)
-closeButton.Text = "X"
-closeButton.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-closeButton.TextColor3 = Color3.new(1, 1, 1)
-closeButton.Font = Enum.Font.GothamBold
-closeButton.TextScaled = true
-Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 10)
+local close=Instance.new("TextButton",ajax)
+close.Size=UDim2.new(0,30,0,30)
+close.Position=UDim2.new(1,-40,0,10)
+close.Text="X"
+close.BackgroundColor3=Color3.fromRGB(180,30,30)
+close.TextColor3=Color3.new(1,1,1)
+close.Font=Enum.Font.GothamBold
+close.TextScaled=true
+Instance.new("UICorner",close).CornerRadius=UDim.new(0,10)
 
-local minimizeButton = Instance.new("TextButton", ajaxHub)
-minimizeButton.Size = UDim2.new(0, 30, 0, 30)
-minimizeButton.Position = UDim2.new(1, -80, 0, 10)
-minimizeButton.Text = "-"
-minimizeButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-minimizeButton.TextColor3 = Color3.new(1, 1, 1)
-minimizeButton.Font = Enum.Font.GothamBold
-minimizeButton.TextScaled = true
-Instance.new("UICorner", minimizeButton).CornerRadius = UDim.new(0, 10)
+local min=Instance.new("TextButton",ajax)
+min.Size=UDim2.new(0,30,0,30)
+min.Position=UDim2.new(1,-80,0,10)
+min.Text="-"
+min.BackgroundColor3=Color3.fromRGB(30,30,30)
+min.TextColor3=Color3.new(1,1,1)
+min.Font=Enum.Font.GothamBold
+min.TextScaled=true
+Instance.new("UICorner",min).CornerRadius=UDim.new(0,10)
 
-local minimizedBox = Instance.new("TextButton", gui)
-minimizedBox.Size = UDim2.new(0, 40, 0, 40)
-minimizedBox.Position = UDim2.new(0, 20, 0.5, 0)
-minimizedBox.BackgroundColor3 = Color3.new(0, 0, 0)
-minimizedBox.TextColor3 = Color3.new(1, 1, 1)
-minimizedBox.Text = "A"
-minimizedBox.Font = Enum.Font.GothamBold
-minimizedBox.TextScaled = true
-minimizedBox.Visible = false
-Instance.new("UICorner", minimizedBox).CornerRadius = UDim.new(0, 10)
+local minBox=Instance.new("TextButton",gui)
+minBox.Size=UDim2.new(0,40,0,40)
+minBox.Position=UDim2.new(0,20,0.5,0)
+minBox.BackgroundColor3=Color3.new(0,0,0)
+minBox.TextColor3=Color3.new(1,1,1)
+minBox.Text="A"
+minBox.Font=Enum.Font.GothamBold
+minBox.TextScaled=true
+minBox.Visible=false
+Instance.new("UICorner",minBox).CornerRadius=UDim.new(0,10)
 
--- Confirmation Box
-local confirmBox = Instance.new("Frame", gui)
-confirmBox.Size = UDim2.new(0, 300, 0, 150)
-confirmBox.AnchorPoint = Vector2.new(0.5, 0.5)
-confirmBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-confirmBox.BackgroundColor3 = Color3.new(0, 0, 0)
-confirmBox.Visible = false
-Instance.new("UICorner", confirmBox).CornerRadius = UDim.new(0, 12)
+local cBox=Instance.new("Frame",gui)
+cBox.Size=UDim2.new(0,300,0,150)
+cBox.AnchorPoint=Vector2.new(0.5,0.5)
+cBox.Position=UDim2.new(0.5,0,0.5,0)
+cBox.BackgroundColor3=Color3.new(0,0,0)
+cBox.Visible=false
+Instance.new("UICorner",cBox).CornerRadius=UDim.new(0,12)
 
-local confirmLabel = Instance.new("TextLabel", confirmBox)
-confirmLabel.Size = UDim2.new(1, -20, 0.6, 0)
-confirmLabel.Position = UDim2.new(0.5, 0, 0.1, 0)
-confirmLabel.AnchorPoint = Vector2.new(0.5, 0)
-confirmLabel.Text = "¿Estás seguro de que quieres cerrar?"
-confirmLabel.TextColor3 = Color3.new(1, 1, 1)
-confirmLabel.Font = Enum.Font.Gotham
-confirmLabel.TextScaled = true
-confirmLabel.BackgroundTransparency = 1
+local cLabel=Instance.new("TextLabel",cBox)
+cLabel.Size=UDim2.new(1,-20,0.6,0)
+cLabel.Position=UDim2.new(0.5,0,0.1,0)
+cLabel.AnchorPoint=Vector2.new(0.5,0)
+cLabel.Text="¿Estás seguro de que quieres cerrar?"
+cLabel.TextColor3=Color3.new(1,1,1)
+cLabel.Font=Enum.Font.Gotham
+cLabel.TextScaled=true
+cLabel.BackgroundTransparency=1
 
-local yesBtn = Instance.new("TextButton", confirmBox)
-yesBtn.Size = UDim2.new(0.4, 0, 0.25, 0)
-yesBtn.Position = UDim2.new(0.1, 0, 0.7, 0)
-yesBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-yesBtn.Text = "Sí"
-yesBtn.TextColor3 = Color3.new(1, 1, 1)
-yesBtn.Font = Enum.Font.GothamBold
-yesBtn.TextScaled = true
-Instance.new("UICorner", yesBtn).CornerRadius = UDim.new(0, 8)
+local yBtn=Instance.new("TextButton",cBox)
+yBtn.Size=UDim2.new(0.4,0,0.25,0)
+yBtn.Position=UDim2.new(0.1,0,0.7,0)
+yBtn.BackgroundColor3=Color3.fromRGB(0,200,0)
+yBtn.Text="Sí"
+yBtn.TextColor3=Color3.new(1,1,1)
+yBtn.Font=Enum.Font.GothamBold
+yBtn.TextScaled=true
+Instance.new("UICorner",yBtn).CornerRadius=UDim.new(0,8)
 
-local noBtn = Instance.new("TextButton", confirmBox)
-noBtn.Size = UDim2.new(0.4, 0, 0.25, 0)
-noBtn.Position = UDim2.new(0.5, 0, 0.7, 0)
-noBtn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
-noBtn.Text = "No"
-noBtn.TextColor3 = Color3.new(1, 1, 1)
-noBtn.Font = Enum.Font.GothamBold
-noBtn.TextScaled = true
-Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0, 8)
+local nBtn=Instance.new("TextButton",cBox)
+nBtn.Size=UDim2.new(0.4,0,0.25,0)
+nBtn.Position=UDim2.new(0.5,0,0.7,0)
+nBtn.BackgroundColor3=Color3.fromRGB(180,30,30)
+nBtn.Text="No"
+nBtn.TextColor3=Color3.new(1,1,1)
+nBtn.Font=Enum.Font.GothamBold
+nBtn.TextScaled=true
+Instance.new("UICorner",nBtn).CornerRadius=UDim.new(0,8)
 
-closeButton.MouseButton1Click:Connect(function()
-    ajaxHub.Visible = false
-    confirmBox.Visible = true
+close.MouseButton1Click:Connect(function()
+ ajax.Visible=false
+ cBox.Visible=true
 end)
 
-yesBtn.MouseButton1Click:Connect(function()
-    gui:Destroy()
+yBtn.MouseButton1Click:Connect(function()
+ gui:Destroy()
 end)
 
-noBtn.MouseButton1Click:Connect(function()
-    confirmBox.Visible = false
-    ajaxHub.Visible = true
+nBtn.MouseButton1Click:Connect(function()
+ cBox.Visible=false
+ ajax.Visible=true
 end)
 
-minimizeButton.MouseButton1Click:Connect(function()
-    ajaxHub.Visible = false
-    minimizedBox.Visible = true
+min.MouseButton1Click:Connect(function()
+ ajax.Visible=false
+ minBox.Visible=true
 end)
 
-minimizedBox.MouseButton1Click:Connect(function()
-    ajaxHub.Visible = true
-    minimizedBox.Visible = false
+minBox.MouseButton1Click:Connect(function()
+ ajax.Visible=true
+ minBox.Visible=false
 end)
 
--- ESP Button
-local espBtn = Instance.new("TextButton", ajaxHub)
-espBtn.Size = UDim2.new(0, 200, 0, 40)
-espBtn.Position = UDim2.new(0, 20, 0, 80)
-espBtn.Text = "ESP Usuarios"
-espBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-espBtn.TextColor3 = Color3.new(1, 1, 1)
-espBtn.Font = Enum.Font.GothamBold
-espBtn.TextScaled = true
-Instance.new("UICorner", espBtn).CornerRadius = UDim.new(0, 10)
+local espBtn=Instance.new("TextButton",ajax)
+espBtn.Size=UDim2.new(0,200,0,40)
+espBtn.Position=UDim2.new(0,20,0,80)
+espBtn.Text="ESP Usuarios"
+espBtn.BackgroundColor3=Color3.fromRGB(40,40,40)
+espBtn.TextColor3=Color3.new(1,1,1)
+espBtn.Font=Enum.Font.GothamBold
+espBtn.TextScaled=true
+Instance.new("UICorner",espBtn).CornerRadius=UDim.new(0,10)
 
-local espStatus = Instance.new("TextLabel", ajaxHub)
-espStatus.Size = UDim2.new(0, 20, 0, 40)
-espStatus.Position = UDim2.new(0, 230, 0, 80)
-espStatus.BackgroundTransparency = 1
-espStatus.Text = "🔴"
-espStatus.TextScaled = true
-espStatus.Font = Enum.Font.GothamBold
+local espStatus=Instance.new("TextLabel",ajax)
+espStatus.Size=UDim2.new(0,20,0,40)
+espStatus.Position=UDim2.new(0,230,0,80)
+espStatus.BackgroundTransparency=1
+espStatus.Text="🔴"
+espStatus.TextScaled=true
+espStatus.Font=Enum.Font.GothamBold
 
-local espEnabled = false
-local espObjects = {}
-local nameTags = {}
-
-local function toggleESP(state)
-    for _, adorn in pairs(espObjects) do adorn:Destroy() end
-    for _, tag in pairs(nameTags) do tag:Destroy() end
-    table.clear(espObjects)
-    table.clear(nameTags)
-    if state then
-        for _, player in pairs(Players:GetPlayers()) do
-            if player ~= plr and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                local hrp = player.Character.HumanoidRootPart
-                local box = Instance.new("BoxHandleAdornment")
-                box.Size = Vector3.new(4, 6, 2)
-                box.Adornee = hrp
-                box.AlwaysOnTop = true
-                box.ZIndex = 10
-                box.Color3 = Color3.new(0, 1, 0)
-                box.Transparency = 0.3
-                box.Parent = hrp
-                table.insert(espObjects, box)
-
-                local tag = Instance.new("BillboardGui", player.Character)
-                tag.Size = UDim2.new(0, 100, 0, 30)
-                tag.Adornee = hrp
-                tag.AlwaysOnTop = true
-                local nameLabel = Instance.new("TextLabel", tag)
-                nameLabel.Size = UDim2.new(1, 0, 1, 0)
-                nameLabel.BackgroundTransparency = 1
-                nameLabel.Text = player.Name
-                nameLabel.TextColor3 = Color3.new(0, 1, 0)
-                nameLabel.TextScaled = true
-                nameLabel.Font = Enum.Font.GothamBold
-                table.insert(nameTags, tag)
-            end
-        end
-    end
-    espStatus.Text = state and "🟢" or "🔴"
+local espOn=false
+local espObjects,nameTags={},{}
+local function toggleESP(s)
+ for _,v in pairs(espObjects) do v:Destroy() end
+ for _,v in pairs(nameTags) do v:Destroy() end
+ table.clear(espObjects)
+ table.clear(nameTags)
+ if s then
+  for _,p in pairs(P:GetPlayers()) do
+   if p~=plr and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+    local hrp=p.Character.HumanoidRootPart
+    local b=Instance.new("BoxHandleAdornment")
+    b.Size=Vector3.new(4,6,2)
+    b.Adornee=hrp
+    b.AlwaysOnTop=true
+    b.ZIndex=10
+    b.Color3=Color3.new(0,1,0)
+    b.Transparency=0.3
+    b.Parent=hrp
+    table.insert(espObjects,b)
+    local tag=Instance.new("BillboardGui",p.Character)
+    tag.Size=UDim2.new(0,100,0,30)
+    tag.Adornee=hrp
+    tag.AlwaysOnTop=true
+    local lbl=Instance.new("TextLabel",tag)
+    lbl.Size=UDim2.new(1,0,1,0)
+    lbl.BackgroundTransparency=1
+    lbl.Text=p.Name
+    lbl.TextColor3=Color3.new(0,1,0)
+    lbl.TextScaled=true
+    lbl.Font=Enum.Font.GothamBold
+    table.insert(nameTags,tag)
+   end
+  end
+ end
+ espStatus.Text = s and "🟢" or "🔴"
 end
 
 espBtn.MouseButton1Click:Connect(function()
-    espEnabled = not espEnabled
-    toggleESP(espEnabled)
+ espOn = not espOn
+ toggleESP(espOn)
 end)
 
--- Speed Boost Button (load external script)
-local speedBtn = Instance.new("TextButton", ajaxHub)
-speedBtn.Size = UDim2.new(0, 200, 0, 40)
-speedBtn.Position = UDim2.new(0, 20, 0, 140)
-speedBtn.Text = "Script Speed Boost"
-speedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-speedBtn.TextColor3 = Color3.new(1, 1, 1)
-speedBtn.Font = Enum.Font.GothamBold
-speedBtn.TextScaled = true
-Instance.new("UICorner", speedBtn).CornerRadius = UDim.new(0, 10)
+local speedBtn=Instance.new("TextButton",ajax)
+speedBtn.Size=UDim2.new(0,200,0,40)
+speedBtn.Position=UDim2.new(0,20,0,140)
+speedBtn.Text="Script Speed Boost"
+speedBtn.BackgroundColor3=Color3.fromRGB(40,40,40)
+speedBtn.TextColor3=Color3.new(1,1,1)
+speedBtn.Font=Enum.Font.GothamBold
+speedBtn.TextScaled=true
+Instance.new("UICorner",speedBtn).CornerRadius=UDim.new(0,10)
 
 speedBtn.MouseButton1Click:Connect(function()
-    local success, err = pcall(function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-cframe-speed-31062"))()
-    end)
-    if not success then
-        warn("Falló el script de Speed Boost: ", err)
-    end
+ local s,e=pcall(function()
+  loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-cframe-speed-31062"))()
+ end)
+ if not s then warn("Falló el script de Speed Boost: ",e) end
 end)
 
--- Server Hop Button
-local serverHopBtn = Instance.new("TextButton", ajaxHub)
-serverHopBtn.Size = UDim2.new(0, 200, 0, 40)
-serverHopBtn.Position = UDim2.new(0, 20, 0, 200)
-serverHopBtn.Text = "Server Hop 🔄"
-serverHopBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-serverHopBtn.TextColor3 = Color3.new(1, 1, 1)
-serverHopBtn.Font = Enum.Font.GothamBold
-serverHopBtn.TextScaled = true
-Instance.new("UICorner", serverHopBtn).CornerRadius = UDim.new(0, 10)
+local serverHopBtn=Instance.new("TextButton",ajax)
+serverHopBtn.Size=UDim2.new(0,200,0,40)
+serverHopBtn.Position=UDim2.new(0,20,0,200)
+serverHopBtn.Text="Server Hop 🔄"
+serverHopBtn.BackgroundColor3=Color3.fromRGB(40,40,40)
+serverHopBtn.TextColor3=Color3.new(1,1,1)
+serverHopBtn.Font=Enum.Font.GothamBold
+serverHopBtn.TextScaled=true
+Instance.new("UICorner",serverHopBtn).CornerRadius=UDim.new(0,10)
 
 serverHopBtn.MouseButton1Click:Connect(function()
-    local placeId = game.PlaceId
-
-    local success, response = pcall(function()
-        return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100"))
-    end)
-
-    if success and response and response.data then
-        for _, server in pairs(response.data) do
-            if server.playing < server.maxPlayers then
-                TeleportService:TeleportToPlaceInstance(placeId, server.id)
-                break
-            end
-        end
-    else
-        warn("No se pudo obtener servidores para Server Hop.")
-    end
+ local pId=game.PlaceId
+ local s,r=pcall(function()
+  return H:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..pId.."/servers/Public?sortOrder=Asc&limit=100"))
+ end)
+ if s and r and r.data then
+  for _,sv in pairs(r.data) do
+   if sv.playing<sv.maxPlayers then
+    Tp:TeleportToPlaceInstance(pId,sv.id)
+    break
+   end
+  end
+ else warn("No se pudo obtener servidores para Server Hop.") end
 end)
 
--- Continue Button click handler
-continueBtn.MouseButton1Click:Connect(function()
-    clickSound:Play()
-    alertFrame.Visible = false
-    loadingFrame.Visible = true
-
-    wait(5)
-    runDots = false
-
-    loadingLabel.Visible = false
-    footerText.Visible = false
-
-    loadedText.Text = "Cargado!"
-    loadedText.Visible = true
-
-    madeByText.Text = "Hecho por: top | imademyselfapromise"
-    madeByText.Visible = true
-
-    wait(2)
-    loadingFrame.Visible = false
-    ajaxHub.Visible = true
+cb.MouseButton1Click:Connect(function()
+ snd:Play()
+ af.Visible=false
+ lf.Visible=true
+ wait(5)
+ runDots=false
+ ll.Visible=false
+ ft.Visible=false
+ ld.Text="Cargado!"
+ ld.Visible=true
+ mb.Text="Hecho por: top | imademyselfapromise"
+ mb.Visible=true
+ wait(2)
+ lf.Visible=false
+ ajax.Visible=true
 end)
